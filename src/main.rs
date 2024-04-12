@@ -32,11 +32,18 @@ fn main() -> Result<(), ConfigError> {
     let alias = args.alias;
     let command = settings.aliases[&alias].clone();
 
-    println!("alias: {:?}", alias);
-    println!("command: {:?}", command);
+    match command {
+        Value::String(command) => {
+            println!("alias: {:?}", alias);
+            println!("command: {:?}", command);
 
-    // executing the command
-    todo!();
-
-    Ok(())
+            // executing the command
+            todo!();
+            
+            Ok(())
+        }
+        _ => {
+            panic!("commands must be of valid strings!")
+        }
+    }
 }
