@@ -35,12 +35,26 @@ fn main() -> Result<(), ConfigError> {
     match command {
         Value::String(command) => {
             println!("alias: {:?}", alias);
-            println!("command: {:?}", command);
+            println!("\nrunning command: {}...\n", command);
 
-            // executing the command
-            todo!();
-            
+            if cfg!(target_os = "windows") {
+                std::process::Command::new("cmd")
+                    .args(["/C", &command])
+                    .status()
+                    .expect(&format!("{} command failed to execute", &command));
+            } else {
+                std::process::Command::new("sh")
+                    .arg("-c")
+                    .arg(&command)
+                    .status()
+                    .expect(&format!("{} command failed to execute", &command));
+            }
+
+            println!("\nRupit finished executing command: {}\n", command);
             Ok(())
+        }
+        Value::Null => {
+            panic!("\n{:?} alias not found in aliases list\n", &alias)
         }
         _ => {
             panic!("commands must be of valid strings!")
