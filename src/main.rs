@@ -2,6 +2,7 @@ use clap::Parser;
 use config::{Config, ConfigError, File, FileFormat};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use std::{env, ffi::OsString};
 
 #[derive(Parser, Debug)]
 struct Arguments {
@@ -34,16 +35,21 @@ fn main() -> Result<(), ConfigError> {
 
     match command {
         Value::String(command) => {
-            println!("alias: {:?}", alias);
+            println!("\nalias: {:?}", alias);
             println!("\nrunning command: {}...\n", command);
 
-            if cfg!(target_os = "windows") {
+            if cfg!(windows) {
                 std::process::Command::new("cmd")
                     .args(["/C", &command])
                     .status()
                     .expect(&format!("{} command failed to execute", &command));
             } else {
-                std::process::Command::new("sh")
+                // getting the name of the default shell from os env variables
+                // adding support to different shells in unix and macos systems
+                let shell =
+                    env::var_os("SHELL").unwrap_or_else(|| OsString::from(String::from("sh")));
+
+                std::process::Command::new(shell)
                     .arg("-c")
                     .arg(&command)
                     .status()
