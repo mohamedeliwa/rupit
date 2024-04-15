@@ -33,8 +33,14 @@ fn main() -> Result<(), ConfigError> {
     let settings = Config::builder()
         .set_default("aliases", "{}")?
         .add_source(File::from(config_file_path))
+        // .add_source(File::new("rupit", FileFormat::Json))
         .build()
-        .unwrap();
+        .unwrap_or(
+            Config::builder()
+                .set_default("aliases", "{}")?
+                .build()
+                .unwrap(),
+        );
 
     let settings: Settings = settings.try_deserialize::<Settings>().unwrap();
 
