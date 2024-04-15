@@ -6,7 +6,7 @@ using a configuration file `rupit.json`, that contains the list of aliases for r
 
 ## How to use
 
-For Linux users you can use the pre-built binary from the releases [page]() , it's built and tested on **Ubuntu 22.04.4 LTS**,
+For Linux users you can use the pre-built binary from the releases [page](https://github.com/mohamedeliwa/rupit/releases) , it's built and tested on **Ubuntu 22.04.4 LTS**,
 
 or you can build from source for linux, windows, and macOS systems using the following steps:
 
