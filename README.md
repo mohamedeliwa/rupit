@@ -6,22 +6,19 @@ using a configuration file `rupit.json`, that contains the list of aliases for r
 
 ## How to use
 
-after pulling the repo, and building the project with `cargo build --release`,<br />
-put the release binary in a suitable execution path then do the following:
+1. Pull the repo: `git pull git@github.com:mohamedeliwa/rupit.git`
+2. Build the project with: `cargo build --release`
+3. Put the release binary in a suitable execution path
 
-1. create `rupit.json` file, with a structure similar to the following:
+   > Note: depending on your OS the path at which to put the file will be
 
-   > Note: the path at which to put the file depends on yours OS as follows
+   > **Linux**: /home/\<user>/.config/rupit/rupit.json
 
-   > **Linux**: /home/<user>/.config/rupit/rupit.json
+   > **Windows**: C:\Users\\\<user>\AppData\Roaming\Foo Corp\Bar App\rupit.json
 
-   > **Windows**: C:\Users\<user>\AppData\Roaming\Foo Corp\Bar App\rupit.json
+   > **macOS**: /Users/\<user>/Library/Application Support/com.Foo-Corp.Bar-App/rupit.json
 
-   > **macOS**: /Users/<user>/Library/Application Support/com.Foo-Corp.Bar-App/rupit.json
-
-the `rupit.json` file must have at least an empty `{}` for json deserialzation to work correctly.
-
-an example of `rupit.json` file
+4. Create `rupit.json` file, with a structure similar to the following:
 
 ```json
 {
@@ -32,7 +29,7 @@ an example of `rupit.json` file
 }
 ```
 
-2. run the command with an alias name `rupit <ALIAS>`
+5. Run the command with an alias name `rupit <ALIAS>`
 
 ```sh
 $ rupit greetings
