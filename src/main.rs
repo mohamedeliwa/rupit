@@ -1,6 +1,5 @@
 use clap::Parser;
-use config::{Config, ConfigError, File};
-use directories::ProjectDirs;
+use config::ConfigError;
 use serde_json::Value;
 use std::{env, ffi::OsString};
 
@@ -14,31 +13,12 @@ struct Arguments {
 }
 
 fn main() -> Result<(), ConfigError> {
-    // getting the path of the config file
-    // Linux:   /home/<user>/.config/rupit
-    // Windows: C:\Users\<user>\AppData\Roaming\Foo Corp\Bar App
-    // macOS:   /Users/<user>/Library/Application Support/com.Foo-Corp.Bar-App
-    let config_dir = ProjectDirs::from("", "", "rupit").unwrap();
-    let config_dir_path = config_dir.config_dir();
-    let config_file_path = config_dir_path.join("rupit.json");
+    let config_file_path = settings::get_config_file_path();
+
+    let settings: Settings = settings::get_user_defined_settings(config_file_path).unwrap();
 
     // extracting the command alias from the cli arguments
     let args: Arguments = Arguments::parse();
-
-    // getting the list of aliases from the config file
-    let settings = Config::builder()
-        .set_default("aliases", "{}")?
-        .add_source(File::from(config_file_path))
-        // .add_source(File::new("rupit", FileFormat::Json))
-        .build()
-        .unwrap_or(
-            Config::builder()
-                .set_default("aliases", "{}")?
-                .build()
-                .unwrap(),
-        );
-
-    let settings: Settings = settings.try_deserialize::<Settings>().unwrap();
 
     // getting the actual command from the config file
     let alias = args.alias;
