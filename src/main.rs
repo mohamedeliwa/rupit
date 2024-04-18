@@ -13,12 +13,12 @@ struct Arguments {
 }
 
 fn main() -> Result<(), ConfigError> {
+    // extracting the command alias from the cli arguments
+    let args: Arguments = Arguments::parse();
+
     let config_file_path = settings::get_config_file_path();
 
     let settings: Settings = settings::get_user_defined_settings(config_file_path).unwrap();
-
-    // extracting the command alias from the cli arguments
-    let args: Arguments = Arguments::parse();
 
     // getting the actual command from the config file
     let alias = args.alias;
