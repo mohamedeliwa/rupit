@@ -1,8 +1,8 @@
 use clap::Parser;
 use config::ConfigError;
 use serde_json::Value;
-use std::{env, ffi::OsString};
 
+mod runner;
 mod settings;
 use settings::Settings;
 
@@ -30,21 +30,9 @@ fn main() -> Result<(), ConfigError> {
             println!("\nrunning command: {}...\n", command);
 
             if cfg!(windows) {
-                std::process::Command::new("cmd")
-                    .args(["/C", &command])
-                    .status()
-                    .expect(&format!("{} command failed to execute", &command));
+                runner::run_command_windows(&command);
             } else {
-                // getting the name of the default shell from os env variables
-                // adding support to different shells in unix and macos systems
-                let shell =
-                    env::var_os("SHELL").unwrap_or_else(|| OsString::from(String::from("sh")));
-
-                std::process::Command::new(shell)
-                    .arg("-c")
-                    .arg(&command)
-                    .status()
-                    .expect(&format!("{} command failed to execute", &command));
+                runner::run_command_unix(&command);
             }
 
             println!("\nRupit finished executing command: {}\n", command);
