@@ -1,20 +1,16 @@
 use clap::Parser;
 use config::{Config, ConfigError, File};
 use directories::ProjectDirs;
-use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::{env, ffi::OsString};
+
+mod settings;
+use settings::Settings;
 
 #[derive(Parser, Debug)]
 struct Arguments {
     /// the alias for the command/s to execute
     alias: String,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-struct Settings {
-    /// a list of all aliases sourced from the config file
-    aliases: Value,
 }
 
 fn main() -> Result<(), ConfigError> {
