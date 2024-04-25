@@ -1,13 +1,21 @@
 use std::{env, ffi::OsString};
 
-pub fn run_command_windows(command: &str) -> () {
+pub fn run_command(command: &str) -> () {
+    if cfg!(windows) {
+        run_command_windows(command);
+    } else {
+        run_command_unix(command);
+    }
+}
+
+fn run_command_windows(command: &str) -> () {
     std::process::Command::new("cmd")
         .args(["/C", command])
         .status()
         .expect(&format!("{} command failed to execute", command));
 }
 
-pub fn run_command_unix(command: &str) -> () {
+fn run_command_unix(command: &str) -> () {
     // getting the name of the default shell from os env variables
     // adding support to different shells in unix and macos systems
     let shell = env::var_os("SHELL").unwrap_or_else(|| OsString::from(String::from("sh")));

@@ -29,11 +29,7 @@ fn main() -> Result<(), ConfigError> {
             println!("\nalias: {:?}", alias);
             println!("\nrunning command: {}...\n", command);
 
-            if cfg!(windows) {
-                runner::run_command_windows(&command);
-            } else {
-                runner::run_command_unix(&command);
-            }
+            runner::run_command(&command);
 
             println!("\nRupit finished executing command: {}\n", command);
             Ok(())
