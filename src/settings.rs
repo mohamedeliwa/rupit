@@ -10,6 +10,23 @@ pub struct Settings {
     pub aliases: Value,
 }
 
+pub fn get_command_for_alias(alias: &str) -> Result<String, ConfigError> {
+    let config_file_path = get_config_file_path();
+    let settings: Settings = get_user_defined_settings(config_file_path).unwrap();
+
+    let command = &settings.aliases[&alias];
+
+    match command {
+        Value::String(command) => Ok(command.to_string()),
+        Value::Null => {
+            panic!("\n{:?} alias not found in aliases list\n", &alias)
+        }
+        _ => {
+            panic!("commands must be of valid strings!")
+        }
+    }
+}
+
 /// returns the path of the config file according the OS
 ///
 /// as follows
@@ -19,13 +36,13 @@ pub struct Settings {
 /// Windows: C:\Users\\\<user>\AppData\Roaming\Foo Corp\Bar App\rupit.json
 ///
 /// macOS:   /Users/\<user>/Library/Application Support/com.Foo-Corp.Bar-App/rupit.json
-pub fn get_config_file_path() -> PathBuf {
+fn get_config_file_path() -> PathBuf {
     let config_dir = ProjectDirs::from("", "", "rupit").unwrap();
     let config_dir_path = config_dir.config_dir();
     config_dir_path.join("rupit.json")
 }
 
-pub fn get_user_defined_settings(config_file_path: PathBuf) -> Result<Settings, ConfigError> {
+fn get_user_defined_settings(config_file_path: PathBuf) -> Result<Settings, ConfigError> {
     // getting and parsing the user defined configuration file
     let settings = Config::builder()
         .set_default("aliases", "{}")?
