@@ -1,11 +1,13 @@
 use std::{env, ffi::OsString};
 
 pub fn run_command(command: &str) -> () {
+    println!("\nexecuting command: {}...\n", command);
     if cfg!(windows) {
         run_command_windows(command);
     } else {
         run_command_unix(command);
     }
+    println!("\nRupit finished executing command: {}\n", command);
 }
 
 fn run_command_windows(command: &str) -> () {
