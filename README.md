@@ -13,15 +13,6 @@ or you can build from source for linux, windows, and macOS systems using the fol
 1. Pull the repo: `git pull git@github.com:mohamedeliwa/rupit.git`
 2. Build the project with: `cargo build --release`
 3. Put the release binary in a suitable execution path
-
-   > Note: depending on your OS the path at which to put the file will be
-
-   > **Linux**: /home/\<user>/.config/rupit/rupit.json
-
-   > **Windows**: C:\Users\\\<user>\AppData\Roaming\Foo Corp\Bar App\rupit.json
-
-   > **macOS**: /Users/\<user>/Library/Application Support/com.Foo-Corp.Bar-App/rupit.json
-
 4. Create `rupit.json` file, with a structure similar to the following:
 
 ```json
@@ -32,6 +23,14 @@ or you can build from source for linux, windows, and macOS systems using the fol
   }
 }
 ```
+
+> Note: depending on your OS the path at which to put the file will be
+
+> **Linux**: /home/\<user>/.config/rupit/rupit.json
+
+> **Windows**: C:\Users\\\<user>\AppData\Roaming\Foo Corp\Bar App\rupit.json
+
+> **macOS**: /Users/\<user>/Library/Application Support/com.Foo-Corp.Bar-App/rupit.json
 
 5. Run the command with an alias name `rupit <ALIAS>`
 
