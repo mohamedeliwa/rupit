@@ -10,8 +10,16 @@ For Linux users you can use the pre-built binary from the releases [page](https:
 
 or you can build from source for linux, windows, and macOS systems using the following steps:
 
-1. Pull the repo: `git pull git@github.com:mohamedeliwa/rupit.git`
-2. Build the project with: `cargo build --release`
+1. Pull the repo:
+ ```sh
+ git pull git@github.com:mohamedeliwa/rupit.git
+ ```
+
+2. Build the project with: 
+```sh
+cargo build --release
+```
+
 3. Put the release binary in a suitable execution path
 4. Create `rupit.json` file, with a structure similar to the following:
 
@@ -35,13 +43,13 @@ or you can build from source for linux, windows, and macOS systems using the fol
 5. Run the command with an alias name `rupit <ALIAS>`
 
 ```sh
-$ rupit greetings
+rupit greetings
 ```
 
 this will execute the following:
 
 ```sh
-$ echo "Hello World"
+echo "Hello World"
 
 Hello World
 ```
