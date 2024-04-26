@@ -52,7 +52,13 @@ fn main() -> Result<(), ConfigError> {
             runner::run_command(&command);
         }
         Commands::Show(args) => {
-            println!("{:?}", args)
+            if args.config {
+                let config_file_path = settings::get_config_file_path();
+                println!("\n Rupit's config file path is:");
+                println!("\n {:?}", config_file_path);
+            } else if args.aliases {
+                println!("\n Listing available aliases is not supported yet!");
+            }
         }
     }
     Ok(())

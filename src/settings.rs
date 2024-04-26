@@ -36,7 +36,7 @@ pub fn get_command_for_alias(alias: &str) -> Result<String, ConfigError> {
 /// Windows: C:\Users\\\<user>\AppData\Roaming\Foo Corp\Bar App\rupit.json
 ///
 /// macOS:   /Users/\<user>/Library/Application Support/com.Foo-Corp.Bar-App/rupit.json
-fn get_config_file_path() -> PathBuf {
+pub fn get_config_file_path() -> PathBuf {
     let config_dir = ProjectDirs::from("", "", "rupit").unwrap();
     let config_dir_path = config_dir.config_dir();
     config_dir_path.join("rupit.json")
