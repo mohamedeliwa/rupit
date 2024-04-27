@@ -5,25 +5,29 @@ use serde_json::Value;
 use std::path::PathBuf;
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct Settings {
+struct Settings {
     /// a list of all aliases sourced from the config file
-    pub aliases: Value,
+    aliases: Value,
 }
 
 pub fn get_command_for_alias(alias: &str) -> Result<String, ConfigError> {
-    let config_file_path = get_config_file_path();
-    let settings: Settings = get_user_defined_settings(config_file_path).unwrap();
+    let config_file_path = get_config_file_path().ok_or(ConfigError::Message(String::from(
+        "couldn't get config file path from the OS",
+    )))?;
+
+    let settings: Settings = get_user_defined_settings(config_file_path)?;
 
     let command = &settings.aliases[&alias];
 
     match command {
         Value::String(command) => Ok(command.to_string()),
-        Value::Null => {
-            panic!("\n{:?} alias not found in aliases list\n", &alias)
-        }
-        _ => {
-            panic!("commands must be of valid strings!")
-        }
+        Value::Null => Err(ConfigError::Message(format!(
+            "{:?} alias not found in aliases list",
+            &alias
+        ))),
+        _ => Err(ConfigError::Message(String::from(
+            "command must be a valid string!",
+        ))),
     }
 }
 
@@ -36,10 +40,10 @@ pub fn get_command_for_alias(alias: &str) -> Result<String, ConfigError> {
 /// Windows: C:\Users\\\<user>\AppData\Roaming\Foo Corp\Bar App\rupit.json
 ///
 /// macOS:   /Users/\<user>/Library/Application Support/com.Foo-Corp.Bar-App/rupit.json
-pub fn get_config_file_path() -> PathBuf {
-    let config_dir = ProjectDirs::from("", "", "rupit").unwrap();
-    let config_dir_path = config_dir.config_dir();
-    config_dir_path.join("rupit.json")
+pub fn get_config_file_path() -> Option<PathBuf> {
+    let config_dir = ProjectDirs::from("", "", "rupit")?;
+    let config_file_path = config_dir.config_dir().join("rupit.json");
+    Some(config_file_path)
 }
 
 fn get_user_defined_settings(config_file_path: PathBuf) -> Result<Settings, ConfigError> {
@@ -49,13 +53,7 @@ fn get_user_defined_settings(config_file_path: PathBuf) -> Result<Settings, Conf
         .add_source(File::from(config_file_path))
         // .add_source(File::new("rupit", FileFormat::Json))
         .build()
-        .unwrap_or(
-            Config::builder()
-                .set_default("aliases", "{}")?
-                .build()
-                .unwrap(),
-        );
+        .unwrap_or(Config::builder().set_default("aliases", "{}")?.build()?);
 
-    let settings: Settings = settings.try_deserialize::<Settings>().unwrap();
-    Ok(settings)
+    settings.try_deserialize::<Settings>()
 }
