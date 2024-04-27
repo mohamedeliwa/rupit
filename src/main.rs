@@ -16,7 +16,11 @@ fn main() -> Result<(), ConfigError> {
 
             let command = settings::get_command_for_alias(alias)?;
 
-            runner::run_command(&command);
+            println!("\nexecuting command: {}...\n", command);
+            runner::run_command(&command).map_err(|_| {
+                ConfigError::Message(format!("{} command failed to execute", command))
+            })?;
+            println!("\nRupit finished executing command: {}\n", command);
         }
         Commands::Show(args) => {
             if args.config {
