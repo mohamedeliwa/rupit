@@ -27,7 +27,7 @@ pub struct ShowArgs {
     /// Prints the path of the config file
     #[arg(long, short)]
     pub config: bool,
-    /// Prints the list of the available aliases in the config file
+    /// Prints the command for the provided alias
     #[arg(long, short)]
-    pub aliases: bool,
+    pub alias: Option<String>,
 }

@@ -12,7 +12,7 @@ fn main() -> Result<(), ConfigError> {
     match args.command {
         Commands::Run(args) => {
             let alias = &args.alias;
-            println!("\nalias: {:?}", alias);
+            println!("\nalias: {}", alias);
 
             let command = settings::get_command_for_alias(alias)?;
 
@@ -30,8 +30,15 @@ fn main() -> Result<(), ConfigError> {
 
                 println!("\n Rupit's config file path is:");
                 println!("\n {:?}", config_file_path);
-            } else if args.aliases {
-                println!("\n Listing available aliases is not supported yet!");
+            } else if args.alias.is_some() {
+                let command = settings::get_command_for_alias(
+                    &args
+                        .alias
+                        .as_ref()
+                        .expect("a value of alias must always exist, ie can't be None"),
+                )?;
+                println!("\n the command is:");
+                println!("\n {}", command);
             }
         }
     }
