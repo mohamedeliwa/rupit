@@ -53,3 +53,10 @@ echo "Hello World"
 
 Hello World
 ```
+
+## Available Commands
+
+- `rupit run <alias>` -> to run specific alias command from the config file.
+- `rupit show -c` -> to show the expected path of the config file.
+- `rupit show -a <alias>` -> to print the alias corresponding command without executing it.
+- `rupit help` -> to print the help message
