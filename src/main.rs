@@ -1,42 +1,55 @@
 use clap::Parser;
-use config::ConfigError;
 
 mod arguments;
 use arguments::{Arguments, Commands};
-mod runner;
-mod settings;
+mod entities;
+mod error;
+use error::{Error, Result};
+mod externals;
+mod services;
 
-fn main() -> Result<(), ConfigError> {
+fn main() -> Result<()> {
     let args: Arguments = Arguments::parse();
+    let app_name = String::from("rupit");
+
+    // region: initiating entities and injecting dependencies
+    let configuration_access = externals::ConfigurationAccess::new(app_name);
+    let mut configuration_service =
+        services::ConfigurationService::new(None, &configuration_access, &configuration_access);
+    let configuration_entity = configuration_service.parse_configuration()?;
+    configuration_service.register_configuration(&configuration_entity);
+    let command_runner = externals::CommandRuner {};
+    let command_service = services::CommandsService::new(&command_runner);
+    // endregion: initiating entities and injecting dependencies
 
     match args.command {
         Commands::Run(args) => {
             let alias = &args.alias;
             println!("\nalias: {}", alias);
 
-            let command = settings::get_command_for_alias(alias)?;
+            let command = configuration_service
+                .get_command_for_alias(alias)
+                .ok_or(Error::Services(services::Error::AliasNotFound))?;
 
-            println!("\nexecuting command: {}...\n", command);
-            runner::run_command(&command).map_err(|_| {
-                ConfigError::Message(format!("{} command failed to execute", command))
-            })?;
-            println!("\nRupit finished executing command: {}\n", command);
+            command_service.run_command(&command)?;
         }
         Commands::Show(args) => {
             if args.config {
-                let config_file_path = settings::get_config_file_path().ok_or(
-                    ConfigError::Message(String::from("couldn't get config file path from the OS")),
-                )?;
+                let config_file_path = configuration_service
+                    .get_config_file_path()
+                    .ok_or(Error::Services(services::Error::FailedToGetFilePath))?;
 
-                println!("\n Rupit's config file path is:");
-                println!("\n {:?}", config_file_path);
+                command_service.print_config_file_path(&config_file_path)?;
             } else if args.alias.is_some() {
-                let command = settings::get_command_for_alias(
-                    &args
-                        .alias
-                        .as_ref()
-                        .expect("a value of alias must always exist, ie can't be None"),
-                )?;
+                let command = configuration_service
+                    .get_command_for_alias(
+                        &args
+                            .alias
+                            .as_ref()
+                            .expect("a value of alias must always exist, ie can't be None"),
+                    )
+                    .ok_or(Error::Services(services::Error::AliasNotFound))?;
+
                 println!("\n the command is:");
                 println!("\n {}", command);
             }
